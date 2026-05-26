@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigitalCraftsLab — منتجات رقمية احترافية</title>
+<meta name="description" content="أدوات رقمية احترافية: منشئ السير الذاتية، متتبع الميزانية، مصمم الأنماط. أدوات HTML قابلة للتحميل بـ6 لغات.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg-primary: #06060b;
+  --bg-secondary: #0d0d14;
+  --bg-card: #12121c;
+  --bg-card-hover: #181826;
+  --border: rgba(212, 168, 83, 0.12);
+  --border-hover: rgba(212, 168, 83, 0.3);
+  --gold: #D4A853;
+  --gold-light: #E8C97A;
+  --gold-dim: rgba(212, 168, 83, 0.15);
+  --teal: #0EA5E9;
+  --teal-dim: rgba(14, 165, 233, 0.12);
+  --text-primary: #f0ede6;
+  --text-secondary: #9a9aaf;
+  --text-dim: #5a5a72;
+  --success: #22c55e;
+  --font-ar: 'Cairo', sans-serif;
+  --font-en: 'Outfit', sans-serif;
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ar);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+::selection { background: var(--gold); color: var(--bg-primary); }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-secondary); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  padding: 1rem 2rem;
+  background: rgba(6, 6, 11, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  transition: var(--transition);
+}
+nav.scrolled { padding: 0.7rem 2rem; background: rgba(6, 6, 11, 0.92); }
+.nav-inner {
+  max-width: 1300px; margin: auto;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.nav-logo {
+  font-family: var(--font-en); font-weight: 800; font-size: 1.35rem;
+  color: var(--gold); text-decoration: none; letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--text-primary); font-weight: 400; }
+.nav-links { display: flex; gap: 2.2rem; align-items: center; }
+.nav-links a {
+  color: var(--text-secondary); text-decoration: none; font-size: 0.92rem;
+  font-weight: 500; transition: var(--transition); position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; right: 0; width: 0; height: 2px;
+  background: var(--gold); transition: var(--transition); border-radius: 2px;
+}
+.nav-links a:hover { color: var(--gold); }
+.nav-links a:hover::after { width: 100%; }
+.lang-toggle {
+  background: var(--gold-dim); border: 1px solid var(--border);
+  color: var(--gold); padding: 0.4rem 1rem; border-radius: 99px;
+  font-family: var(--font-en); font-size: 0.82rem; font-weight: 600;
+  cursor: pointer; transition: var(--transition);
+}
+.lang-toggle:hover { background: var(--gold); color: var(--bg-primary); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden; padding: 8rem 2rem 4rem;
+}
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+}
+.orb {
+  position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+.orb-1 { width: 600px; height: 600px; background: var(--gold); top: -15%; left: -10%; animation-delay: 0s; }
+.orb-2 { width: 500px; height: 500px; background: var(--teal); bottom: -20%; right: -8%; animation-delay: -7s; opacity: 0.2; }
+.orb-3 { width: 350px; height: 350px; background: #a855f7; top: 50%; left: 60%; animation-delay: -14s; opacity: 0.15; }
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.05); }
+  66% { transform: translate(-20px, 20px) scale(0.95); }
+}
+.hero-grid {
+  position: absolute; inset: 0; z-index: 1;
+  background-image:
+    linear-gradient(rgba(212, 168, 83, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 168, 83, 0.03) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+}
+.hero-content {
+  position: relative; z-index: 2; text-align: center; max-width: 820px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.6rem;
+  background: var(--gold-dim); border: 1px solid var(--border);
+  padding: 0.45rem 1.2rem; border-radius: 99px; margin-bottom: 2rem;
+  font-size: 0.85rem; color: var(--gold-light);
+}
+.hero-badge .dot { width: 7px; height: 7px; background: var(--success); border-radius: 50%; animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.hero h1 {
+  font-size: clamp(2.5rem, 6vw, 4.2rem); font-weight: 900;
+  line-height: 1.2; margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--text-primary) 0%, var(--gold-light) 50%, var(--gold) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.hero p {
+  font-size: 1.15rem; color: var(--text-secondary); max-width: 600px; margin: 0 auto 2.5rem;
+  line-height: 1.9;
+}
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  padding: 0.85rem 2rem; border-radius: 99px; font-size: 0.95rem;
+  font-weight: 700; text-decoration: none; cursor: pointer;
+  transition: var(--transition); border: none; font-family: var(--font-ar);
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold) 0%, #c49340 100%);
+  color: var(--bg-primary); box-shadow: 0 4px 25px rgba(212, 168, 83, 0.3);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 35px rgba(212, 168, 83, 0.45); }
+.btn-outline {
+  background: transparent; color: var(--text-primary);
+  border: 1.5px solid var(--border-hover);
+}
+.btn-outline:hover { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+
+.hero-stats {
+  display: flex; gap: 3rem; justify-content: center; margin-top: 4rem;
+  padding-top: 3rem; border-top: 1px solid var(--border);
+}
+.stat { text-align: center; }
+.stat-num { font-family: var(--font-en); font-size: 2rem; font-weight: 800; color: var(--gold); }
+.stat-label { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.2rem; }
+
+/* ── SECTION COMMON ── */
+.section { padding: 6rem 2rem; position: relative; }
+.section-inner { max-width: 1300px; margin: auto; }
+.section-header { text-align: center; margin-bottom: 4rem; }
+.section-tag {
+  font-family: var(--font-en); font-size: 0.78rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 3px; color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+.section-title { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; line-height: 1.3; }
+.section-title .highlight { color: var(--gold); }
+.section-desc { color: var(--text-secondary); margin-top: 1rem; max-width: 550px; margin-inline: auto; font-size: 1.05rem; }
+
+/* ── PRODUCTS ── */
+.products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 2rem; }
+.product-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden;
+  transition: var(--transition); position: relative;
+}
+.product-card:hover {
+  border-color: var(--border-hover); transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--border-hover);
+}
+.product-card.featured { grid-column: span 2; }
+.product-card.featured .product-gallery { height: 420px; }
+.card-accent {
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--teal));
+  opacity: 0; transition: var(--transition);
+}
+.product-card:hover .card-accent { opacity: 1; }
+
+.product-gallery {
+  position: relative; height: 320px; overflow: hidden; background: var(--bg-secondary);
+  cursor: grab;
+}
+.product-gallery:active { cursor: grabbing; }
+.gallery-track {
+  display: flex; height: 100%; transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.gallery-track img {
+  min-width: 100%; height: 100%; object-fit: cover;
+}
+.gallery-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(6, 6, 11, 0.75); backdrop-filter: blur(8px);
+  border: 1px solid var(--border); color: var(--text-primary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition); font-size: 1.1rem; z-index: 5;
+}
+.gallery-nav:hover { background: var(--gold); color: var(--bg-primary); border-color: var(--gold); }
+.gallery-prev { left: 1rem; }
+.gallery-next { right: 1rem; }
+.gallery-dots {
+  position: absolute; bottom: 1rem; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 6px; z-index: 5;
+}
+.gallery-dots .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.3); cursor: pointer; transition: var(--transition);
+}
+.gallery-dots .dot.active { background: var(--gold); width: 24px; border-radius: 4px; }
+.product-badge {
+  position: absolute; top: 1rem; right: 1rem; z-index: 5;
+  background: var(--gold); color: var(--bg-primary); font-size: 0.75rem;
+  font-weight: 700; padding: 0.3rem 0.8rem; border-radius: 99px;
+}
+
+.product-info { padding: 2rem; }
+.product-category {
+  font-family: var(--font-en); font-size: 0.72rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 2px; color: var(--teal); margin-bottom: 0.6rem;
+}
+.product-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 0.8rem; line-height: 1.3; }
+.product-desc { color: var(--text-secondary); font-size: 0.92rem; margin-bottom: 1.5rem; line-height: 1.8; }
+.product-features {
+  display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;
+}
+.feature-tag {
+  background: var(--gold-dim); color: var(--gold-light);
+  padding: 0.3rem 0.8rem; border-radius: 99px; font-size: 0.78rem; font-weight: 600;
+}
+.feature-tag.teal { background: var(--teal-dim); color: var(--teal); }
+.product-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 1.5rem; border-top: 1px solid var(--border);
+}
+.product-price {
+  font-family: var(--font-en); font-size: 1.8rem; font-weight: 800; color: var(--gold);
+}
+.product-price .currency { font-size: 0.9rem; font-weight: 500; color: var(--text-dim); }
+.btn-buy {
+  background: linear-gradient(135deg, var(--gold), #c49340);
+  color: var(--bg-primary); padding: 0.7rem 1.8rem; border-radius: 99px;
+  font-weight: 700; font-size: 0.9rem; text-decoration: none;
+  transition: var(--transition); display: inline-flex; align-items: center; gap: 0.4rem;
+}
+.btn-buy:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(212, 168, 83, 0.4); }
+
+/* ── THUMBNAILS ── */
+.product-thumbs {
+  display: flex; gap: 0.5rem; padding: 0 2rem 1.5rem; overflow-x: auto;
+}
+.product-thumbs img {
+  width: 56px; height: 56px; object-fit: cover; border-radius: var(--radius-sm);
+  border: 2px solid transparent; cursor: pointer; transition: var(--transition); opacity: 0.5;
+}
+.product-thumbs img.active, .product-thumbs img:hover { border-color: var(--gold); opacity: 1; }
+
+/* ── FEATURES SECTION ── */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;
+}
+.feature-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 2rem; transition: var(--transition);
+  position: relative; overflow: hidden;
+}
+.feature-card::before {
+  content: ''; position: absolute; top: 0; right: 0; width: 80px; height: 80px;
+  background: var(--gold); opacity: 0.03; border-radius: 0 0 0 100%;
+  transition: var(--transition);
+}
+.feature-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+.feature-card:hover::before { opacity: 0.06; width: 120px; height: 120px; }
+.feature-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--gold-dim); display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem; margin-bottom: 1.2rem;
+}
+.feature-card h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+.feature-card p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.8; }
+
+/* ── WHY US ── */
+.why-section { background: var(--bg-secondary); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.why-visual { position: relative; }
+.why-visual-img {
+  border-radius: var(--radius); border: 1px solid var(--border);
+  overflow: hidden; aspect-ratio: 4/3;
+}
+.why-visual-img img { width: 100%; height: 100%; object-fit: cover; }
+.why-floating-card {
+  position: absolute; bottom: -1.5rem; left: -1.5rem;
+  background: var(--bg-card); border: 1px solid var(--border-hover);
+  border-radius: var(--radius); padding: 1.2rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+.why-floating-icon {
+  width: 44px; height: 44px; border-radius: 12px; background: var(--gold);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; color: var(--bg-primary);
+}
+.why-floating-card .num { font-family: var(--font-en); font-size: 1.4rem; font-weight: 800; color: var(--gold); }
+.why-floating-card .label { font-size: 0.78rem; color: var(--text-secondary); }
+.why-content h2 { font-size: 2rem; font-weight: 800; margin-bottom: 1.5rem; line-height: 1.3; }
+.why-content h2 .highlight { color: var(--gold); }
+.why-list { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+.why-list li {
+  display: flex; align-items: flex-start; gap: 1rem;
+  padding: 1rem; border-radius: var(--radius-sm); transition: var(--transition);
+}
+.why-list li:hover { background: var(--bg-card); }
+.why-check {
+  width: 28px; height: 28px; border-radius: 50%; background: var(--gold-dim);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gold); font-size: 0.8rem; flex-shrink: 0; margin-top: 2px;
+}
+.why-list .why-text h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.2rem; }
+.why-list .why-text p { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* ── FOOTER ── */
+footer {
+  padding: 4rem 2rem 2rem; border-top: 1px solid var(--border);
+  background: var(--bg-secondary);
+}
+.footer-inner {
+  max-width: 1300px; margin: auto;
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+  margin-bottom: 3rem;
+}
+.footer-brand .footer-logo {
+  font-family: var(--font-en); font-weight: 800; font-size: 1.3rem;
+  color: var(--gold); margin-bottom: 1rem;
+}
+.footer-brand .footer-logo span { color: var(--text-primary); font-weight: 400; }
+.footer-brand p { color: var(--text-secondary); font-size: 0.88rem; line-height: 1.8; max-width: 300px; }
+.footer-col h4 {
+  font-size: 0.82rem; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 1.5px; color: var(--text-dim); margin-bottom: 1.2rem;
+  font-family: var(--font-en);
+}
+.footer-col a {
+  display: block; color: var(--text-secondary); text-decoration: none;
+  font-size: 0.9rem; margin-bottom: 0.7rem; transition: var(--transition);
+}
+.footer-col a:hover { color: var(--gold); padding-right: 6px; }
+.footer-bottom {
+  max-width: 1300px; margin: auto; padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  flex-wrap: wrap; gap: 1rem;
+}
+.footer-bottom p { color: var(--text-dim); font-size: 0.82rem; }
+.footer-bottom p .heart { color: var(--gold); }
+.footer-socials { display: flex; gap: 0.8rem; }
+.footer-socials a {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--border); display: flex;
+  align-items: center; justify-content: center;
+  color: var(--text-secondary); text-decoration: none;
+  transition: var(--transition); font-size: 0.9rem;
+}
+.footer-socials a:hover { background: var(--gold); color: var(--bg-primary); border-color: var(--gold); }
+
+/* ── SCROLL REVEAL ── */
+.reveal {
+  opacity: 0; transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .product-card.featured { grid-column: span 1; }
+  .why-grid { grid-template-columns: 1fr; }
+  .why-visual { max-width: 500px; margin: auto; }
+  .footer-inner { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .products-grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 1.5rem; flex-wrap: wrap; }
+  .footer-inner { grid-template-columns: 1fr; }
+  .footer-bottom { flex-direction: column; text-align: center; }
+  .product-gallery { height: 260px; }
+  .product-card.featured .product-gallery { height: 300px; }
+  .why-floating-card { bottom: -1rem; left: 0.5rem; }
+}
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2rem; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .btn { width: 100%; justify-content: center; }
+}
+
+/* ── EN MODE ── */
+html[lang="en"] body { font-family: var(--font-en); }
+html[lang="en"] .product-title { font-weight: 800; }
+html[lang="en"] .hero-stats { font-family: var(--font-en); }
+
+/* Mobile menu */
+.mobile-menu-btn {
+  display: none; background: none; border: none; color: var(--text-primary);
+  font-size: 1.5rem; cursor: pointer;
+}
+@media (max-width: 768px) {
+  .mobile-menu-btn { display: block; }
+  .nav-links.active {
+    display: flex; flex-direction: column;
+    position: absolute; top: 100%; left: 0; right: 0;
+    background: rgba(6, 6, 11, 0.97); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border); padding: 1.5rem 2rem; gap: 1.2rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo">DigitalCrafts<span>Lab</span></a>
+    <div class="nav-links" id="navLinks">
+      <a href="#products" data-ar="المنتجات" data-en="Products">المنتجات</a>
+      <a href="#features" data-ar="المميزات" data-en="Features">المميزات</a>
+      <a href="#why" data-ar="لماذا نحن" data-en="Why Us">لماذا نحن</a>
+      <button class="lang-toggle" onclick="toggleLang()" id="langBtn">EN</button>
+    </div>
+    <button class="mobile-menu-btn" onclick="document.getElementById('navLinks').classList.toggle('active')">&#9776;</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge reveal">
+      <span class="dot"></span>
+      <span data-ar="أدوات رقمية احترافية" data-en="Professional Digital Tools">أدوات رقمية احترافية</span>
+    </div>
+    <h1 class="reveal reveal-delay-1" data-ar="صنّع مستقبلك الرقمي بأدوات مصممة بعناية" data-en="Craft Your Digital Future with Carefully Designed Tools">صنّع مستقبلك الرقمي بأدوات مصممة بعناية</h1>
+    <p class="reveal reveal-delay-2" data-ar="ثلاثة منتجات رقمية متعددة اللغات — تصميم سيرة ذاتية احترافية، إدارة ميزانية ذكية، وتصميم أنماط إبداعية. ملف واحد، بدون تثبيت، يعمل فوراً." data-en="Three multilingual digital products — professional resume design, smart budget management, and creative pattern design. Single file, no installation, works instantly.">ثلاثة منتجات رقمية متعددة اللغات — تصميم سيرة ذاتية احترافية، إدارة ميزانية ذكية، وتصميم أنماط إبداعية. ملف واحد، بدون تثبيت، يعمل فوراً.</p>
+    <div class="hero-actions reveal reveal-delay-3">
+      <a href="#products" class="btn btn-primary" data-ar="استعرض المنتجات" data-en="Browse Products">
+        <span>&#8595;</span> <span>استعرض المنتجات</span>
+      </a>
+      <a href="https://digitalcraftslab.gumroad.com" target="_blank" class="btn btn-outline" data-ar="متجرة على Gumroad" data-en="Store on Gumroad">
+        <span data-ar="متجرة على Gumroad" data-en="Store on Gumroad">متجرة على Gumroad</span> &#8599;
+      </a>
+    </div>
+    <div class="hero-stats reveal reveal-delay-3">
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label" data-ar="منتجات رقمية" data-en="Digital Products">منتجات رقمية</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6</div>
+        <div class="stat-label" data-ar="لغات مدعومة" data-en="Supported Languages">لغات مدعومة</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">HTML5</div>
+        <div class="stat-label" data-ar="بدون تثبيت" data-en="No Installation">بدون تثبيت</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">$9.99</div>
+        <div class="stat-label" data-ar="يبدأ السعر من" data-en="Starting From">يبدأ السعر من</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section" id="products">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag reveal" data-ar="منتجاتنا" data-en="Our Products">منتجاتنا</div>
+      <h2 class="section-title reveal reveal-delay-1" data-ar="أدوات <span class='highlight'>قوية</span> لحياتك المهنية" data-en="Powerful Tools for Your <span class='highlight'>Career</span>">أدوات <span class="highlight">قوية</span> لحياتك المهنية</h2>
+      <p class="section-desc reveal reveal-delay-2" data-ar="كل منتج مصمم بعناية ليكون سهل الاستخدام مع ميزات متقدمة تناسب احتياجاتك" data-en="Each product is carefully designed to be user-friendly with advanced features that suit your needs">كل منتج مصمم بعناية ليكون سهل الاستخدام مع ميزات متقدمة تناسب احتياجاتك</p>
+    </div>
+
+    <div class="products-grid">
+
+      <!-- Resume Builder -->
+      <div class="product-card reveal">
+        <div class="card-accent"></div>
+        <div class="product-gallery" data-product="resume">
+          <div class="gallery-track">
+            <img src="etsy-screenshots/resume/resume-09-full-app.png" alt="Resume Builder Full App" loading="lazy">
+            <img src="etsy-screenshots/resume/resume-02-corporate-template.png" alt="Corporate Template" loading="lazy">
+            <img src="etsy-screenshots/resume/resume-04-creative-bold.png" alt="Creative Bold Template" loading="lazy">
+            <img src="etsy-screenshots/resume/resume-08-purple-color.png" alt="Purple Theme" loading="lazy">
+            <img src="etsy-screenshots/resume/resume-10-arabic.png" alt="Arabic Resume" loading="lazy">
+          </div>
+          <button class="gallery-nav gallery-next" onclick="galleryNav(this, 1)">&#10095;</button>
+          <button class="gallery-nav gallery-prev" onclick="galleryNav(this, -1)">&#10094;</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <div class="product-thumbs">
+          <img src="etsy-screenshots/resume-small/resume-09-full-app.png" class="active" onclick="goToSlide(this, 0)" alt="">
+          <img src="etsy-screenshots/resume-small/resume-02-corporate-template.png" onclick="goToSlide(this, 1)" alt="">
+          <img src="etsy-screenshots/resume-small/resume-04-creative-bold.png" onclick="goToSlide(this, 2)" alt="">
+          <img src="etsy-screenshots/resume-small/resume-08-purple-color.png" onclick="goToSlide(this, 3)" alt="">
+          <img src="etsy-screenshots/resume-small/resume-10-arabic.png" onclick="goToSlide(this, 4)" alt="">
+        </div>
+        <div class="product-info">
+          <div class="product-category" data-ar="أداة السيرة الذاتية" data-en="Resume Tool">أداة السيرة الذاتية</div>
+          <h3 class="product-title" data-ar="منشئ السيرة الذاتية الاحترافية" data-en="Professional Resume Builder">منشئ السيرة الذاتية الاحترافية</h3>
+          <p class="product-desc" data-ar="أنشئ سيرة ذاتية مذهلة في دقائق. يوفر 6 قوالب احترافية بألوان متنوعة مع دعم كامل للغة العربية والإنجليزية و4 لغات أخرى. صدّر كـ PDF أو HTML." data-en="Create a stunning resume in minutes. Features 6 professional templates with diverse colors, full Arabic and English support plus 4 more languages. Export as PDF or HTML.">أنشئ سيرة ذاتية مذهلة في دقائق. يوفر 6 قوالب احترافية بألوان متنوعة مع دعم كامل للغة العربية والإنجليزية و4 لغات أخرى. صدّر كـ PDF أو HTML.</p>
+          <div class="product-features">
+            <span class="feature-tag" data-ar="6 قوالب" data-en="6 Templates">6 قوالب</span>
+            <span class="feature-tag teal" data-ar="6 لغات" data-en="6 Languages">6 لغات</span>
+            <span class="feature-tag" data-ar="تصدير PDF" data-en="PDF Export">تصدير PDF</span>
+            <span class="feature-tag teal" data-ar="دعم RTL" data-en="RTL Support">دعم RTL</span>
+            <span class="feature-tag" data-ar="تصدير HTML" data-en="HTML Export">تصدير HTML</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">$9.99 <span class="currency" data-ar="دولار" data-en="USD">دولار</span></div>
+            <a href="https://digitalcraftslab.gumroad.com/l/ResumeGenerator" target="_blank" class="btn-buy" data-ar="اشتري الآن" data-en="Buy Now">
+              <span>اشتري الآن</span> &#8599;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Budget Tracker -->
+      <div class="product-card reveal reveal-delay-1">
+        <div class="card-accent"></div>
+        <div class="product-badge" data-ar="الأكثر مبيعاً" data-en="Bestseller">الأكثر مبيعاً</div>
+        <div class="product-gallery" data-product="budget">
+          <div class="gallery-track">
+            <img src="etsy-screenshots/budget/budget-02-dashboard-classic.png" alt="Budget Dashboard" loading="lazy">
+            <img src="etsy-screenshots/budget/budget-01-welcome.png" alt="Budget Welcome" loading="lazy">
+            <img src="etsy-screenshots/budget/budget-06-funds-grid.png" alt="Funds Grid" loading="lazy">
+            <img src="etsy-screenshots/budget/budget-07-fund-detail.png" alt="Fund Detail" loading="lazy">
+            <img src="etsy-screenshots/budget/budget-09-arabic.png" alt="Arabic Budget" loading="lazy">
+          </div>
+          <button class="gallery-nav gallery-next" onclick="galleryNav(this, 1)">&#10095;</button>
+          <button class="gallery-nav gallery-prev" onclick="galleryNav(this, -1)">&#10094;</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <div class="product-thumbs">
+          <img src="etsy-screenshots/budget-small/budget-02-dashboard-classic.png" class="active" onclick="goToSlide(this, 0)" alt="">
+          <img src="etsy-screenshots/budget-small/budget-01-welcome.png" onclick="goToSlide(this, 1)" alt="">
+          <img src="etsy-screenshots/budget-small/budget-06-funds-grid.png" onclick="goToSlide(this, 2)" alt="">
+          <img src="etsy-screenshots/budget-small/budget-07-fund-detail.png" onclick="goToSlide(this, 3)" alt="">
+          <img src="etsy-screenshots/budget-small/budget-09-arabic.png" onclick="goToSlide(this, 4)" alt="">
+        </div>
+        <div class="product-info">
+          <div class="product-category" data-ar="أداة الميزانية" data-en="Budget Tool">أداة الميزانية</div>
+          <h3 class="product-title" data-ar="متتبع الميزانية وصناديق الادخار" data-en="Budget Tracker & Sinking Funds">متتبع الميزانية وصناديق الادخار</h3>
+          <p class="product-desc" data-ar="تتبع مصاريفك وأهداف الادخار بذكاء. يوفر لوحة تحكم شاملة مع 4 ثيمات مختلفة، دعم 5 عملات عالمية، وتتبع تفصيلي للمعاملات." data-en="Track expenses and savings goals smartly. Comprehensive dashboard with 4 themes, 5 global currencies, and detailed transaction tracking.">تتبع مصاريفك وأهداف الادخار بذكاء. يوفر لوحة تحكم شاملة مع 4 ثيمات مختلفة، دعم 5 عملات عالمية، وتتبع تفصيلي للمعاملات.</p>
+          <div class="product-features">
+            <span class="feature-tag" data-ar="4 ثيمات" data-en="4 Themes">4 ثيمات</span>
+            <span class="feature-tag teal" data-ar="5 عملات" data-en="5 Currencies">5 عملات</span>
+            <span class="feature-tag" data-ar="صناديق ادخار" data-en="Sinking Funds">صناديق ادخار</span>
+            <span class="feature-tag teal" data-ar="6 لغات" data-en="6 Languages">6 لغات</span>
+            <span class="feature-tag" data-ar="تتبع معاملات" data-en="Transaction Tracking">تتبع معاملات</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">$12.99 <span class="currency" data-ar="دولار" data-en="USD">دولار</span></div>
+            <a href="https://digitalcraftslab.gumroad.com/l/BudgetTracker" target="_blank" class="btn-buy" data-ar="اشتري الآن" data-en="Buy Now">
+              <span>اشتري الآن</span> &#8599;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pattern Press -->
+      <div class="product-card reveal reveal-delay-2">
+        <div class="card-accent"></div>
+        <div class="product-gallery" data-product="pattern">
+          <div class="gallery-track">
+            <img src="etsy-screenshots/pattern/pattern-01-full-app.png" alt="Pattern Press Full" loading="lazy">
+            <img src="etsy-screenshots/pattern/pattern-02-checkerboard.png" alt="Checkerboard" loading="lazy">
+            <img src="etsy-screenshots/pattern/pattern-03-floral.png" alt="Floral Pattern" loading="lazy">
+            <img src="etsy-screenshots/pattern/pattern-07-geometric.png" alt="Geometric" loading="lazy">
+            <img src="etsy-screenshots/pattern/pattern-13-arabic-text.png" alt="Arabic Text" loading="lazy">
+            <img src="etsy-screenshots/pattern/pattern-15-bulk-gallery.png" alt="Bulk Gallery" loading="lazy">
+          </div>
+          <button class="gallery-nav gallery-next" onclick="galleryNav(this, 1)">&#10095;</button>
+          <button class="gallery-nav gallery-prev" onclick="galleryNav(this, -1)">&#10094;</button>
+          <div class="gallery-dots"></div>
+        </div>
+        <div class="product-thumbs">
+          <img src="etsy-screenshots/pattern-small/pattern-01-full-app.png" class="active" onclick="goToSlide(this, 0)" alt="">
+          <img src="etsy-screenshots/pattern-small/pattern-02-checkerboard.png" onclick="goToSlide(this, 1)" alt="">
+          <img src="etsy-screenshots/pattern-small/pattern-03-floral.png" onclick="goToSlide(this, 2)" alt="">
+          <img src="etsy-screenshots/pattern-small/pattern-07-geometric.png" onclick="goToSlide(this, 3)" alt="">
+          <img src="etsy-screenshots/pattern-small/pattern-13-arabic-text.png" onclick="goToSlide(this, 4)" alt="">
+          <img src="etsy-screenshots/pattern-small/pattern-15-bulk-gallery.png" onclick="goToSlide(this, 5)" alt="">
+        </div>
+        <div class="product-info">
+          <div class="product-category" data-ar="أداة التصميم" data-en="Design Tool">أداة التصميم</div>
+          <h3 class="product-title" data-ar="Pattern Press — مصمم أنماط القمصان" data-en="Pattern Press — T-Shirt Pattern Designer">Pattern Press — مصمم أنماط القمصان</h3>
+          <p class="product-desc" data-ar="صمم أنماط قمصان فريدة من 15 نمطاً مختلفاً. يدعم الوضع الفردي والجماعي مع إمكانية التحميل كصورة مباشرة. مثالي للطباعة على القمصان." data-en="Design unique t-shirt patterns from 15 different styles. Supports single and bulk mode with direct image download. Perfect for t-shirt printing.">صمم أنماط قمصان فريدة من 15 نمطاً مختلفاً. يدعم الوضع الفردي والجماعي مع إمكانية التحميل كصورة مباشرة. مثالي للطباعة على القمصان.</p>
+          <div class="product-features">
+            <span class="feature-tag" data-ar="15 نمط" data-en="15 Patterns">15 نمط</span>
+            <span class="feature-tag teal" data-ar="وضع جماعي" data-en="Bulk Mode">وضع جماعي</span>
+            <span class="feature-tag" data-ar="6 لغات" data-en="6 Languages">6 لغات</span>
+            <span class="feature-tag teal" data-ar="تحميل صورة" data-en="Image Download">تحميل صورة</span>
+          </div>
+          <div class="product-footer">
+            <div class="product-price">$7.99 <span class="currency" data-ar="دولار" data-en="USD">دولار</span></div>
+            <a href="https://digitalcraftslab.gumroad.com/l/PatternPress" target="_blank" class="btn-buy" data-ar="اشتري الآن" data-en="Buy Now">
+              <span>اشتري الآن</span> &#8599;
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="section-header">
+      <div class="section-tag reveal" data-ar="لماذا هذه الأدوات؟" data-en="Why These Tools?">لماذا هذه الأدوات؟</div>
+      <h2 class="section-title reveal reveal-delay-1" data-ar="ميزات تجعل <span class='highlight'>الفرق</span>" data-en="Features That Make <span class='highlight'>the Difference</span>">ميزات تجعل <span class="highlight">الفرق</span></h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#9881;</div>
+        <h3 data-ar="ملف واحد — بدون تثبيت" data-en="Single File — No Install">ملف واحد — بدون تثبيت</h3>
+        <p data-ar="كل منتج يعمل بملف HTML واحد فقط. افتحه في أي متصفح وابدأ فوراً. لا تحتاج إنترنت أو تثبيت." data-en="Each product runs as a single HTML file. Open it in any browser and start instantly. No internet or installation needed.">كل منتج يعمل بملف HTML واحد فقط. افتحه في أي متصفح وابدأ فوراً. لا تحتاج إنترنت أو تثبيت.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">&#127760;</div>
+        <h3 data-ar="6 لغات متعددة" data-en="6 Multilingual Options">6 لغات متعددة</h3>
+        <p data-ar="عربي، إنجليزي، صيني، إسباني، فرنسي، ألماني. واجهة كاملة بلغتك مع دعم كامل لـ RTL." data-en="Arabic, English, Chinese, Spanish, French, German. Full interface in your language with complete RTL support.">عربي، إنجليزي، صيني، إسباني، فرنسي، ألماني. واجهة كاملة بلغتك مع دعم كامل لـ RTL.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">&#128241;</div>
+        <h3 data-ar="يعمل على كل الأجهزة" data-en="Works on All Devices">يعمل على كل الأجهزة</h3>
+        <p data-ar="تصميم متجاوب يعمل بسلاسة على الكمبيوتر، الجوال، والتابلت. تجربة مستخدم مثالية في كل مكان." data-en="Responsive design that runs smoothly on desktop, mobile, and tablet. Optimal user experience everywhere.">تصميم متجاوب يعمل بسلاسة على الكمبيوتر، الجوال، والتابلت. تجربة مستخدم مثالية في كل مكان.</p>
+      </div>
+      <div class="feature-card reveal">
+        <div class="feature-icon">&#128274;</div>
+        <h3 data-ar="خصوصية تامة" data-en="Total Privacy">خصوصية تامة</h3>
+        <p data-ar="بياناتك تبقى على جهازك. لا خوادم، لا تسجيل دخول، لا تتبع. عملك آمن تماماً." data-en="Your data stays on your device. No servers, no login, no tracking. Your work is completely safe.">بياناتك تبقى على جهازك. لا خوادم، لا تسجيل دخول، لا تتبع. عملك آمن تماماً.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <div class="feature-icon">&#128640;</div>
+        <h3 data-ar="سريع وخفيف" data-en="Fast and Lightweight">سريع وخفيف</h3>
+        <p data-ar="أداء عالي بدون أي مكتبات ثقيلة. تحميل فوري وعمليات سلسة بدون تأخير." data-en="High performance without heavy libraries. Instant loading and smooth operations without delay.">أداء عالي بدون أي مكتبات ثقيلة. تحميل فوري وعمليات سلسة بدون تأخير.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <div class="feature-icon">&#128176;</div>
+        <h3 data-ar="شراء لمرة واحدة" data-en="One-Time Purchase">شراء لمرة واحدة</h3>
+        <p data-ar="ادفع مرة واحدة واحصل على المنتج للأبد. بدون اشتراكات شهرية أو رسوم مخفية." data-en="Pay once and own the product forever. No monthly subscriptions or hidden fees.">ادفع مرة واحدة واحصل على المنتج للأبد. بدون اشتراكات شهرية أو رسوم مخفية.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section why-section" id="why">
+  <div class="section-inner">
+    <div class="why-grid">
+      <div class="why-visual reveal">
+        <div class="why-visual-img">
+          <img src="pinterest-screenshots/resume-square-pinterest.png" alt="DigitalCraftsLab Products" loading="lazy">
+        </div>
+        <div class="why-floating-card">
+          <div class="why-floating-icon">&#9733;</div>
+          <div>
+            <div class="num" data-ar="+3" data-en="+3">+3</div>
+            <div class="label" data-ar="منتجات احترافية" data-en="Professional Products">منتجات احترافية</div>
+          </div>
+        </div>
+      </div>
+      <div class="why-content reveal reveal-delay-1">
+        <div class="section-tag" data-ar="DigitalCraftsLab" data-en="DigitalCraftsLab">DigitalCraftsLab</div>
+        <h2 data-ar="نصمم أدوات رقمية <span class='highlight'>تحل مشاكل حقيقية</span>" data-en="We Design Digital Tools That <span class='highlight'>Solve Real Problems</span>">نصمم أدوات رقمية <span class="highlight">تحل مشاكل حقيقية</span></h2>
+        <ul class="why-list">
+          <li>
+            <div class="why-check">&#10003;</div>
+            <div class="why-text">
+              <h4 data-ar="تصميم عربي أصيل" data-en="Authentic Arabic Design">تصميم عربي أصيل</h4>
+              <p data-ar="واجهات مصممة خصيصاً للعربية مع دعم كامل لاتجاه الكتابة من اليمين لليسار" data-en="Interfaces designed specifically for Arabic with full RTL writing direction support">واجهات مصممة خصيصاً للعربية مع دعم كامل لاتجاه الكتابة من اليمين لليسار</p>
+            </div>
+          </li>
+          <li>
+            <div class="why-check">&#10003;</div>
+            <div class="why-text">
+              <h4 data-ar="جودة احترافية" data-en="Professional Quality">جودة احترافية</h4>
+              <p data-ar="كل منتج يخضع لاختبارات دقيقة لضمان تجربة مستخدم مثالية وموثوقية عالية" data-en="Each product undergoes rigorous testing to ensure optimal user experience and high reliability">كل منتج يخضع لاختبارات دقيقة لضمان تجربة مستخدم مثالية وموثوقية عالية</p>
+            </div>
+          </li>
+          <li>
+            <div class="why-check">&#10003;</div>
+            <div class="why-text">
+              <h4 data-ar="تحديثات مجانية" data-en="Free Updates">تحديثات مجانية</h4>
+              <p data-ar="استفد من التحسينات المستمرة والميزات الجديدة دون أي تكلفة إضافية" data-en="Benefit from continuous improvements and new features at no additional cost">استفد من التحسينات المستمرة والميزات الجديدة دون أي تكلفة إضافية</p>
+            </div>
+          </li>
+          <li>
+            <div class="why-check">&#10003;</div>
+            <div class="why-text">
+              <h4 data-ar="دعم فني متواصل" data-en="Ongoing Support">دعم فني متواصل</h4>
+              <p data-ar="فريق دعم متاح للإجابة على استفساراتك ومساعدتك في الاستفادة القصوى من المنتجات" data-en="Support team available to answer your questions and help you maximize product value">فريق دعم متاح للإجابة على استفساراتك ومساعدتك في الاستفادة القصوى من المنتجات</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">DigitalCrafts<span>Lab</span></div>
+      <p data-ar="نصمم أدوات رقمية احترافية بسيطة وقوية. ملف واحد، لا تثبيت، يعمل فوراً على أي جهاز." data-en="We design simple yet powerful professional digital tools. Single file, no installation, works instantly on any device.">نصمم أدوات رقمية احترافية بسيطة وقوية. ملف واحد، لا تثبيت، يعمل فوراً على أي جهاز.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-ar="المنتجات" data-en="Products">المنتجات</h4>
+      <a href="#products" data-ar="منشئ السيرة الذاتية" data-en="Resume Builder">منشئ السيرة الذاتية</a>
+      <a href="#products" data-ar="متتبع الميزانية" data-en="Budget Tracker">متتبع الميزانية</a>
+      <a href="#products" data-ar="Pattern Press" data-en="Pattern Press">Pattern Press</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-ar="المنصات" data-en="Platforms">المنصات</h4>
+      <a href="https://digitalcraftslab.gumroad.com" target="_blank">Gumroad</a>
+      <a href="https://www.producthunt.com/products/resume-generator-2" target="_blank">Product Hunt</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-ar="الدعم" data-en="Support">الدعم</h4>
+      <a href="#features" data-ar="المميزات" data-en="Features">المميزات</a>
+      <a href="#why" data-ar="لماذا نحن" data-en="Why Us">لماذا نحن</a>
+      <a href="https://digitalcraftslab.gumroad.com" target="_blank" data-ar="تواصل معنا" data-en="Contact Us">تواصل معنا</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>&copy; 2026 DigitalCraftsLab. <span class="heart">&#10084;</span> <span data-ar="صنع بكل حب في السعودية" data-en="Made with love in Saudi Arabia">صنع بكل حب في السعودية</span></p>
+    <div class="footer-socials">
+      <a href="https://digitalcraftslab.gumroad.com" target="_blank" title="Gumroad">G</a>
+      <a href="https://www.producthunt.com/products/resume-generator-2" target="_blank" title="Product Hunt">P</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ── LANGUAGE TOGGLE ──
+let currentLang = 'ar';
+function toggleLang() {
+  currentLang = currentLang === 'ar' ? 'en' : 'ar';
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').textContent = currentLang === 'ar' ? 'EN' : 'عربي';
+  document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      el.placeholder = el.getAttribute('data-' + currentLang);
+    } else {
+      el.innerHTML = el.getAttribute('data-' + currentLang);
+    }
+  });
+}
+
+// ── SCROLL REVEAL ──
+const revealElements = document.querySelectorAll('.reveal');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ── GALLERY ──
+function initGalleries() {
+  document.querySelectorAll('.product-gallery').forEach(gallery => {
+    const track = gallery.querySelector('.gallery-track');
+    const images = track.querySelectorAll('img');
+    const dotsContainer = gallery.querySelector('.gallery-dots');
+    let currentIndex = 0;
+
+    images.forEach((_, i) => {
+      const dot = document.createElement('span');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(index => index = i));
+      dotsContainer.appendChild(dot);
+    });
+
+    function goTo(updater) {
+      updater;
+      currentIndex = Math.max(0, Math.min(currentIndex, images.length - 1));
+      track.style.transform = `translateX(${currentLang === 'ar' ? '' : '-'}${currentIndex * 100}%)`;
+      dotsContainer.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentIndex));
+      const thumbs = gallery.parentElement.querySelectorAll('.product-thumbs img');
+      thumbs.forEach((t, i) => t.classList.toggle('active', i === currentIndex));
+      return currentIndex;
+    }
+
+    gallery._goTo = (idx) => { currentIndex = idx; goTo(() => {}); };
+    gallery._nav = (dir) => { currentIndex += dir; goTo(() => {}); };
+
+    goTo(() => currentIndex = 0);
+  });
+}
+initGalleries();
+
+function galleryNav(btn, dir) {
+  const gallery = btn.closest('.product-gallery');
+  gallery._nav(dir);
+}
+
+function goToSlide(thumb, idx) {
+  const gallery = thumb.closest('.product-card').querySelector('.product-gallery');
+  gallery._goTo(idx);
+}
+
+// ── SMOOTH SCROLL ──
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('navLinks').classList.remove('active');
+  });
+});
+
+// ── COUNTER ANIMATION ──
+function animateCounters() {
+  document.querySelectorAll('.stat-num').forEach(el => {
+    const text = el.textContent;
+    if (el.dataset.animated) return;
+    el.dataset.animated = '1';
+    const match = text.match(/[\d.]+/);
+    if (!match) return;
+    const target = parseFloat(match[0]);
+    const prefix = text.substring(0, text.indexOf(match[0]));
+    const suffix = text.substring(text.indexOf(match[0]) + match[0].length);
+    let current = 0;
+    const step = target / 40;
+    const interval = setInterval(() => {
+      current += step;
+      if (current >= target) { current = target; clearInterval(interval); }
+      el.textContent = prefix + (Number.isInteger(target) ? Math.floor(current) : current.toFixed(0)) + suffix;
+    }, 30);
+  });
+}
+
+const statsObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) animateCounters();
+  });
+}, { threshold: 0.5 });
+document.querySelectorAll('.hero-stats').forEach(el => statsObserver.observe(el));
+</script>
+</body>
+</html>
